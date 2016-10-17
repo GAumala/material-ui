@@ -8,6 +8,7 @@ import React, {Component,
 import warning from 'warning';
 import TabTemplate from './TabTemplate';
 import InkBar from './InkBar';
+import {calculateTabWidthAndInkbarPosition} from './TabUtils';
 
 function getStyles(props, context) {
   const {tabs} = context.muiTheme;
@@ -113,6 +114,7 @@ class Tabs extends Component {
     this.setState(newState);
   }
 
+
   getTabs(props = this.props) {
     const tabs = [];
 
@@ -210,19 +212,31 @@ class Tabs extends Component {
           style: tabTemplateStyle,
         }, tab.props.children) : undefined);
 
+      let labelWidth = `${width}%`;
+      // if tab has labelWidth props defined, use that value in pixels instead
+      // of a percentage of the container width
+      if (tab.props.labelWidth)
+        labelWidth = `${tab.props.labelWidth}px`;
       return cloneElement(tab, {
         key: index,
         index: index,
         selected: this.getSelected(tab, index),
-        width: `${width}%`,
+        width: labelWidth,
         onTouchTap: this.handleTabTouchTap,
       });
     });
 
-    const inkBar = this.state.selectedIndex !== -1 ? (
+    const tabLabelData = calculateTabWidthAndInkbarPosition(tabs,
+      this.state.selectedIndex, width);
+
+    warning(tabLabelData, `labelWidth prop is missing in some Tab components.
+      labelWidth prop must be set in either all Tab components or none in order
+      to render the ink bar.`);
+
+    const inkBar = this.state.selectedIndex !== -1 && tabLabelData ? (
       <InkBar
-        left={`${width * this.state.selectedIndex}%`}
-        width={`${width}%`}
+        left={tabLabelData.inkbarPosition}
+        width={tabLabelData.width}
         style={inkBarStyle}
       />
     ) : null;

@@ -44,6 +44,12 @@ class Tab extends Component {
      */
     label: PropTypes.node,
     /**
+     * Specify a fixed width for the tab's label. Every single tab must set this
+     * prop for it to work properly. If no tab sets this prop, each tab-label takes an equal
+     * share of the container's width.
+     */
+    labelWidth: PropTypes.number,
+    /**
      * Fired when the active tab changes by touch or tap.
      * Use this event to specify any functionality when an active tab changes.
      * For example - we are using this to route to home when the third tab becomes active.
@@ -95,6 +101,7 @@ class Tab extends Component {
       onTouchTap, // eslint-disable-line no-unused-vars
       selected, // eslint-disable-line no-unused-vars
       label,
+      labelWidth, // eslint-disable-line no-unused-vars
       style,
       value, // eslint-disable-line no-unused-vars
       width, // eslint-disable-line no-unused-vars
